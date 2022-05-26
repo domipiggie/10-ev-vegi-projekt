@@ -1,11 +1,67 @@
-import mysql.connector, time
-from mysql.connector import errorcode
+import tkinter as tk
+from tkinter import font as tkfont
+import mysql.connector
 
-# stuff idk
 mydb = None
+mycursor = None
 dbToUse = "zap614733-1"
 
-# function that connects to the mysql database
+class Main(tk.Tk):
+    def __init__(self, *args, **kwargs) -> None:
+        tk.Tk.__init__(self, *args, **kwargs)
+        
+        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        
+        self.frames = {}
+        for F in (LoginScreen, DummyScreen):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
+
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("LoginScreen")
+    
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+
+class LoginScreen(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the login page", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        
+        e1 = tk.Entry(self)
+        e2 = tk.Entry(self)
+        
+        button1 = tk.Button(self, text="Login",
+                            command=lambda:login(e1.get(), e2.get(), self.controller))
+        
+        button1.pack()
+        e1.pack()
+        e2.pack()
+
+class DummyScreen(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="Login succesfull", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the login page",
+                           command=lambda: controller.show_frame("LoginScreen"))
+        button.pack()
+
 def connectToDb(dbToConnect: str):
     global mydb 
     mydb = mysql.connector.connect(
@@ -15,41 +71,23 @@ def connectToDb(dbToConnect: str):
         database=dbToConnect
     )
 
-# try to connect to the database, if fails then exit
-try:
-    connectToDb(dbToUse)
-except mysql.connector.Error as err:
-    print("something went wrong while connecting to mysql database")
-    exit(-1)
-
-# connect to database
-connectToDb(dbToUse)
-mycursor = mydb.cursor()
-
-# askin user if they want to add something to the database or read from it
-whatToDo = input("get/add(g/a): ")
-
-if whatToDo == "a":
-    # sql code that we will run to add stuff to the database
-    sql = ("INSERT INTO test (text, idk) VALUES (%s, %s)")
-    
-    # ask user for data to add to database
-    textToSet = input("mi legyen a text: ")
-    idkToSet = int(input("mi legyen az idk: "))
-    
-    # set up valuse that will be added
-    val = (textToSet, idkToSet)
-    
-    # adding data
-    mycursor.execute(sql, val)
-    
-    # commit
-    mydb.commit()
-elif whatToDo == "g":
-    query = ("SELECT kuksi, text, idk FROM test")
+def login(username, password, controller) -> bool:
+    query = ("SELECT accountId, username, password FROM users "
+             "WHERE username='"+username+"' AND password='"+password+"'")
     mycursor.execute(query)
-    for (kuksi, text, idk) in mycursor:
-        print(kuksi, text, idk)
+    found = 0
+    for (username) in mycursor:
+        found += 1
+    if found > 1:
+        exit(-1)
+    elif found == 1:
+        print(username)
+        controller.show_frame("DummyScreen")
+    else:
+        print("not found")
 
-mycursor.close()
-mydb.close()
+if __name__ == "__main__":
+    connectToDb(dbToUse)
+    mycursor = mydb.cursor()
+    app = Main()
+    app.mainloop()
