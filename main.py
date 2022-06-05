@@ -1,93 +1,65 @@
-import tkinter as tk
-from tkinter import font as tkfont
-import mysql.connector
+from tkinter import *
+from PIL import ImageTk,Image
+import pymysql
 
-mydb = None
-mycursor = None
-dbToUse = "zap614733-1"
+mypass = "zHCykld3xKxUVRPX"
+mydatabase="zap614733-1"
 
-class Main(tk.Tk):
-    def __init__(self, *args, **kwargs) -> None:
-        tk.Tk.__init__(self, *args, **kwargs)
-        
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        
-        self.frames = {}
-        for F in (LoginScreen, DummyScreen):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
+con = pymysql.connect(host="mysql-mariadb-25-104.zap-hosting.com",user="zap614733-1",password=mypass,database=mydatabase)
+cur = con.cursor()
 
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
+root = Tk()
+root.title("Library")
+root.minsize(width=400,height=400)
+root.geometry("600x500")
 
-        self.show_frame("LoginScreen")
+# Take n greater than 0.25 and less than 5
+same=True
+n=0.25
+
+# Adding a background image
+background_image =Image.open("lib.jpg")
+[imageSizeWidth, imageSizeHeight] = background_image.size
+
+newImageSizeWidth = int(imageSizeWidth*n)
+if same:
+    newImageSizeHeight = int(imageSizeHeight*n) 
+else:
+    newImageSizeHeight = int(imageSizeHeight/n) 
     
-    def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
-        frame = self.frames[page_name]
-        frame.tkraise()
+background_image = background_image.resize((newImageSizeWidth,newImageSizeHeight),Image.ANTIALIAS)
+img = ImageTk.PhotoImage(background_image)
 
-class LoginScreen(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        label = tk.Label(self, text="This is the login page", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
-        
-        e1 = tk.Entry(self)
-        e2 = tk.Entry(self)
-        
-        button1 = tk.Button(self, text="Login",
-                            command=lambda:login(e1.get(), e2.get(), self.controller))
-        
-        button1.pack()
-        e1.pack()
-        e2.pack()
+Canvas1 = Canvas(root)
 
-class DummyScreen(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        label = tk.Label(self, text="Login succesfull", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Go to the login page",
-                           command=lambda: controller.show_frame("LoginScreen"))
-        button.pack()
+Canvas1.create_image(300,340,image = img)      
+Canvas1.config(bg="white",width = newImageSizeWidth, height = newImageSizeHeight)
+Canvas1.pack(expand=True,fill=BOTH)
 
-def connectToDb(dbToConnect: str):
-    global mydb 
-    mydb = mysql.connector.connect(
-        host="mysql-mariadb-25-104.zap-hosting.com",
-        user="zap614733-1",
-        password="zHCykld3xKxUVRPX",
-        database=dbToConnect
-    )
+headingFrame1 = Frame(root,bg="#FFBB00",bd=5)
+headingFrame1.place(relx=0.2,rely=0.1,relwidth=0.6,relheight=0.16)
 
-def login(username, password, controller) -> bool:
-    query = ("SELECT accountId, username, password FROM users "
-             "WHERE username='"+username+"' AND password='"+password+"'")
-    mycursor.execute(query)
-    found = 0
-    for (username) in mycursor:
-        found += 1
-    if found > 1:
-        exit(-1)
-    elif found == 1:
-        print(username)
-        controller.show_frame("DummyScreen")
-    else:
-        print("not found")
+headingLabel = Label(headingFrame1, text="Welcome to \n *inser creative library name here*", bg='black', fg='white', font=('Courier',13))
+headingLabel.place(relx=0,rely=0, relwidth=1, relheight=1)
 
-if __name__ == "__main__":
-    connectToDb(dbToUse)
-    mycursor = mydb.cursor()
-    app = Main()
-    app.mainloop()
+# add book button
+btn1 = Button(root,text="Add Book Details",bg='black', fg='white')
+btn1.place(relx=0.28,rely=0.4, relwidth=0.45,relheight=0.1)
+
+# delete book button
+btn2 = Button(root,text="Delete Book",bg='black', fg='white')
+btn2.place(relx=0.28,rely=0.5, relwidth=0.45,relheight=0.1)
+
+# view books
+btn3 = Button(root,text="View Book List",bg='black', fg='white')
+btn3.place(relx=0.28,rely=0.6, relwidth=0.45,relheight=0.1)
+
+# issue book to student
+btn4 = Button(root,text="Issue Book to Student",bg='black', fg='white')
+btn4.place(relx=0.28,rely=0.7, relwidth=0.45,relheight=0.1)
+
+# return a book
+btn5 = Button(root,text="Return Book",bg='black', fg='white')
+btn5.place(relx=0.28,rely=0.8, relwidth=0.45,relheight=0.1)
+
+root.mainloop()
