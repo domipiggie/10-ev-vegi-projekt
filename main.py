@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk,Image
 import pymysql
 
+# database stuff
 mypass = "zHCykld3xKxUVRPX"
 mydatabase="zap614733-1"
 
