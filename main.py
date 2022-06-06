@@ -3,6 +3,7 @@ from PIL import ImageTk,Image
 import pymysql
 from AddBook import *
 from ViewBooks import *
+from DeleteBook import *
 
 # database stuff
 mypass = "zHCykld3xKxUVRPX"
@@ -50,7 +51,7 @@ btn1 = Button(root,text="Add Book Details",bg='black', fg='white', command=addBo
 btn1.place(relx=0.28,rely=0.4, relwidth=0.45,relheight=0.1)
 
 # delete book button
-btn2 = Button(root,text="Delete Book",bg='black', fg='white')
+btn2 = Button(root,text="Delete Book",bg='black', fg='white', command=delete)
 btn2.place(relx=0.28,rely=0.5, relwidth=0.45,relheight=0.1)
 
 # view books
