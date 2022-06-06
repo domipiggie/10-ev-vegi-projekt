@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk,Image
 import pymysql
 from AddBook import *
+from ViewBooks import *
 
 # database stuff
 mypass = "zHCykld3xKxUVRPX"
@@ -53,7 +54,7 @@ btn2 = Button(root,text="Delete Book",bg='black', fg='white')
 btn2.place(relx=0.28,rely=0.5, relwidth=0.45,relheight=0.1)
 
 # view books
-btn3 = Button(root,text="View Book List",bg='black', fg='white')
+btn3 = Button(root,text="View Book List",bg='black', fg='white', command=View)
 btn3.place(relx=0.28,rely=0.6, relwidth=0.45,relheight=0.1)
 
 # issue book to student
