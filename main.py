@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk,Image
 import pymysql
+from AddBook import *
 
 # database stuff
 mypass = "zHCykld3xKxUVRPX"
@@ -44,7 +45,7 @@ headingLabel = Label(headingFrame1, text="Welcome to \n *inser creative library 
 headingLabel.place(relx=0,rely=0, relwidth=1, relheight=1)
 
 # add book button
-btn1 = Button(root,text="Add Book Details",bg='black', fg='white')
+btn1 = Button(root,text="Add Book Details",bg='black', fg='white', command=addBook)
 btn1.place(relx=0.28,rely=0.4, relwidth=0.45,relheight=0.1)
 
 # delete book button
