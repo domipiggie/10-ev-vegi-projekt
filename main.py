@@ -4,6 +4,7 @@ import pymysql
 from AddBook import *
 from ViewBooks import *
 from DeleteBook import *
+from IssueBook import *
 
 # database stuff
 mypass = "zHCykld3xKxUVRPX"
@@ -59,7 +60,7 @@ btn3 = Button(root,text="View Book List",bg='black', fg='white', command=View)
 btn3.place(relx=0.28,rely=0.6, relwidth=0.45,relheight=0.1)
 
 # issue book to student
-btn4 = Button(root,text="Issue Book to Student",bg='black', fg='white')
+btn4 = Button(root,text="Issue Book to Student",bg='black', fg='white', command=issueBook)
 btn4.place(relx=0.28,rely=0.7, relwidth=0.45,relheight=0.1)
 
 # return a book
