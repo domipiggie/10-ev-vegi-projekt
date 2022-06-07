@@ -5,6 +5,7 @@ from AddBook import *
 from ViewBooks import *
 from DeleteBook import *
 from IssueBook import *
+from ReturnBook import *
 
 # database stuff
 mypass = "zHCykld3xKxUVRPX"
@@ -64,7 +65,7 @@ btn4 = Button(root,text="Issue Book to Student",bg='black', fg='white', command=
 btn4.place(relx=0.28,rely=0.7, relwidth=0.45,relheight=0.1)
 
 # return a book
-btn5 = Button(root,text="Return Book",bg='black', fg='white')
+btn5 = Button(root,text="Return Book",bg='black', fg='white', command=returnBook)
 btn5.place(relx=0.28,rely=0.8, relwidth=0.45,relheight=0.1)
 
 root.mainloop()
