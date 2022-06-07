@@ -16,8 +16,26 @@ bookTable = "books"
 
 
 def deleteBook():
-    print("idk")
     
+    bid = bookInfo1.get()
+    
+    deleteSql = "delete from "+bookTable+" where bid = '"+bid+"'"
+    deleteIssue = "delete from "+issueTable+" where bid = '"+bid+"'"
+    try:
+        cur.execute(deleteSql)
+        con.commit()
+        cur.execute(deleteIssue)
+        con.commit()
+        messagebox.showinfo('Success',"Book Record Deleted Successfully")
+    except:
+        messagebox.showinfo("Please check Book ID")
+    
+
+    print(bid)
+
+    bookInfo1.delete(0, END)
+    root.destroy()
+
 def delete(): 
     
     global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,bookTable,root
